@@ -35,14 +35,16 @@ function updateUI() {
   var pct = Math.min(100, Math.round((counts.total / MAX_ATTENDEES) * 100));
   progressBar.style.width = pct + "%";
   if (counts.total >= MAX_ATTENDEES) {
+    var winner = computeWinner(counts);
     greeting.style.display = "block";
-    greeting.textContent = "Capacity reached. Check-in is closed.";
-    greeting.className = "success-message";
+    greeting.textContent = "Goal reached! Winning team: " + winner + " 🎉";
+    greeting.className = "success-message celebration";
   }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
   updateUI();
+  renderAttendees();
 });
 
 form.addEventListener("submit", function (e) {
@@ -68,6 +70,11 @@ form.addEventListener("submit", function (e) {
     counts.power = counts.power + 1;
   }
   writeCounts(counts);
+  // save attendee entry
+  var attendees = readAttendees();
+  attendees.push({ name: name, team: team });
+  writeAttendees(attendees);
+  renderAttendees();
   updateUI();
   greeting.style.display = "block";
   greeting.textContent = `${name} — checked in to ${teamDisplay(team)}. Thanks!`;
@@ -89,4 +96,52 @@ function teamDisplay(team) {
     return "Team Renewables";
   }
   return "";
+}
+
+// Attendee list persistence and rendering
+function readAttendees() {
+  try {
+    return JSON.parse(localStorage.getItem("attendees") || "[]");
+  } catch (e) {
+    return [];
+  }
+}
+
+function writeAttendees(list) {
+  localStorage.setItem("attendees", JSON.stringify(list));
+}
+
+function renderAttendees() {
+  var list = readAttendees();
+  var ul = document.getElementById("attendeeList");
+  if (!ul) return;
+  ul.innerHTML = "";
+  list.forEach(function (a) {
+    var li = document.createElement("li");
+    li.className = "attendee-item";
+    li.textContent = a.name + " — " + teamDisplay(a.team);
+    ul.appendChild(li);
+  });
+}
+
+function computeWinner(counts) {
+  var teams = [
+    { key: "water", name: "Team Water Wise", count: counts.water },
+    { key: "zero", name: "Team Net Zero", count: counts.zero },
+    { key: "power", name: "Team Renewables", count: counts.power },
+  ];
+  teams.sort(function (a, b) {
+    return b.count - a.count;
+  });
+  if (teams.length >= 2 && teams[0].count === teams[1].count) {
+    var top = teams
+      .filter(function (t) {
+        return t.count === teams[0].count;
+      })
+      .map(function (t) {
+        return t.name;
+      });
+    return top.join(" & ");
+  }
+  return teams[0].name;
 }
