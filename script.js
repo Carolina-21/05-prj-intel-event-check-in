@@ -5,6 +5,7 @@ const teamSelect = document.getElementById("teamSelect");
 const attendeeCountEl = document.getElementById("attendeeCount");
 const progressBar = document.getElementById("progressBar");
 const greeting = document.getElementById("greeting");
+const resetBtn = document.getElementById("resetBtn");
 const waterCountEl = document.getElementById("waterCount");
 const zeroCountEl = document.getElementById("zeroCount");
 const powerCountEl = document.getElementById("powerCount");
@@ -60,6 +61,9 @@ document.addEventListener("DOMContentLoaded", function () {
   updateUI();
   renderAttendees();
   closeCelebrationBtn.addEventListener("click", hideCelebrationPopup);
+  if (resetBtn) {
+    resetBtn.addEventListener("click", resetEvent);
+  }
 });
 
 form.addEventListener("submit", function (e) {
@@ -172,4 +176,23 @@ function hideCelebrationPopup() {
   if (!celebrationOverlay) return;
   celebrationOverlay.setAttribute("aria-hidden", "true");
   celebrationOverlay.classList.remove("active");
+}
+
+function resetEvent() {
+  localStorage.removeItem("totalAttendees");
+  localStorage.removeItem("team_water");
+  localStorage.removeItem("team_zero");
+  localStorage.removeItem("team_power");
+  localStorage.removeItem("attendees");
+  var counts = { total: 0, water: 0, zero: 0, power: 0 };
+  writeCounts(counts);
+  renderAttendees();
+  updateUI();
+  greeting.style.display = "block";
+  greeting.textContent = "Event has been reset. Ready for a fresh start!";
+  greeting.className = "success-message";
+  hideCelebrationPopup();
+  setTimeout(function () {
+    greeting.style.display = "none";
+  }, 3000);
 }
