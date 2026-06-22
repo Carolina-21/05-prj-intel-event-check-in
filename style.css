@@ -380,6 +380,115 @@ select {
   border-radius: 10px;
 }
 
+.celebration-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.75);
+  z-index: 999;
+}
+
+.celebration-overlay.active {
+  display: flex;
+}
+
+.celebration-content {
+  position: relative;
+  width: min(520px, calc(100% - 40px));
+  padding: 32px 28px 20px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.2);
+  overflow: hidden;
+}
+
+.celebration-card {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.celebration-card h2 {
+  margin-bottom: 14px;
+  font-size: 28px;
+  color: #0f172a;
+}
+
+.celebration-card p {
+  margin-bottom: 24px;
+  color: #334155;
+  font-size: 18px;
+}
+
+.celebration-card button {
+  background: #0f172a;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 22px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.streamers {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.streamer {
+  position: absolute;
+  top: -120px;
+  width: 14px;
+  height: 140px;
+  border-radius: 999px;
+  opacity: 0.85;
+  animation: streamerFall 2.5s ease-in infinite;
+}
+
+.streamer-1 {
+  left: 8%;
+  background: #2dd4bf;
+  animation-delay: 0s;
+}
+.streamer-2 {
+  left: 28%;
+  background: #f97316;
+  animation-delay: 0.4s;
+}
+.streamer-3 {
+  left: 48%;
+  background: #60a5fa;
+  animation-delay: 0.8s;
+}
+.streamer-4 {
+  left: 68%;
+  background: #c084fc;
+  animation-delay: 1.2s;
+}
+.streamer-5 {
+  left: 88%;
+  background: #facc15;
+  animation-delay: 1.6s;
+}
+
+@keyframes streamerFall {
+  0% {
+    transform: translateY(-120px) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(420px) rotate(720deg);
+    opacity: 0;
+  }
+}
+
 /* Mobile responsive */
 @media (max-width: 768px) {
   .hero {

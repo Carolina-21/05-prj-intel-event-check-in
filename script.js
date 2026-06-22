@@ -10,6 +10,9 @@ const zeroCountEl = document.getElementById("zeroCount");
 const powerCountEl = document.getElementById("powerCount");
 
 const MAX_ATTENDEES = 50;
+const celebrationOverlay = document.getElementById("celebrationOverlay");
+const celebrationText = document.getElementById("celebrationText");
+const closeCelebrationBtn = document.getElementById("closeCelebration");
 
 function readCounts() {
   var total = parseInt(localStorage.getItem("totalAttendees") || "0", 10);
@@ -39,12 +42,24 @@ function updateUI() {
     greeting.style.display = "block";
     greeting.textContent = "Goal reached! Winning team: " + winner + " 🎉";
     greeting.className = "success-message celebration";
+    if (
+      celebrationOverlay &&
+      !celebrationOverlay.classList.contains("active")
+    ) {
+      showCelebrationPopup(winner);
+    }
+  } else if (
+    celebrationOverlay &&
+    celebrationOverlay.classList.contains("active")
+  ) {
+    hideCelebrationPopup();
   }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
   updateUI();
   renderAttendees();
+  closeCelebrationBtn.addEventListener("click", hideCelebrationPopup);
 });
 
 form.addEventListener("submit", function (e) {
@@ -144,4 +159,17 @@ function computeWinner(counts) {
     return top.join(" & ");
   }
   return teams[0].name;
+}
+
+function showCelebrationPopup(teamName) {
+  if (!celebrationOverlay || !celebrationText) return;
+  celebrationText.textContent = "The winning team is " + teamName + "!";
+  celebrationOverlay.setAttribute("aria-hidden", "false");
+  celebrationOverlay.classList.add("active");
+}
+
+function hideCelebrationPopup() {
+  if (!celebrationOverlay) return;
+  celebrationOverlay.setAttribute("aria-hidden", "true");
+  celebrationOverlay.classList.remove("active");
 }
